@@ -11,3 +11,4 @@ rocket = "0.4.5"
 scraper = "0.12.0"
 diesel = { version = "1.4.4", features = ["postgres"] }
 dotenv = "0.15.0"
+chrono = "0.4.10"
