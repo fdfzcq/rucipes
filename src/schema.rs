@@ -1,9 +1,9 @@
 table! {
     recipe (id) {
-        id -> Uuid,
+        id -> Int4,
         created_at -> Timestamp,
         updated_at -> Timestamp,
-        recipe_name -> Nullable<Text>,
-        ingredients -> Nullable<Array<Text>>,
+        recipe_name -> Text,
+        ingredients -> Array<Text>,
     }
 }

@@ -1,7 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE TABLE recipe (id uuid PRIMARY KEY,
-                     created_at TIMESTAMP NOT NULL,
+CREATE TABLE recipe (id SERIAL PRIMARY KEY,
+                     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
                      updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-                     recipe_name text,
+                     recipe_name text NOT NULL,
                      -- TODO: create tables for each ingredient --
-                     ingredients text[]);
+                     ingredients text[] NOT NULL DEFAULT '{}');
