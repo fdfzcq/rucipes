@@ -1,3 +1,5 @@
+[*] initialize database
+    [*] create recipe table
 [] crud recipe API
 [] makefile or similar
 [] deploy *
