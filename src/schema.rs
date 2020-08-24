@@ -1,6 +1,6 @@
 table! {
     recipe (id) {
-        id -> Int4,
+        id -> Text,
         created_at -> Timestamp,
         updated_at -> Timestamp,
         recipe_name -> Text,
