@@ -21,21 +21,25 @@ pub struct Recipe {
     pub updated_at: NaiveDateTime,
 }
 
-pub fn create_recipe<'a>(conn: &diesel::pg::PgConnection, id: &'a str, recipe_name: &'a str, ingredients: &'a Vec<String>) -> NewRecipe<'a> {
+// db interface
+
+pub fn create_recipe<'a>(conn: &diesel::pg::PgConnection,
+                         id: &'a str,
+                         recipe_name: &'a str,
+                         ingredients: &'a Vec<String>) -> QueryResult<usize> {
     let new_recipe = NewRecipe {
         id: id,
         recipe_name: recipe_name,
         ingredients: ingredients,
     };
 
-    diesel::insert_into(recipe::table)
-        .values(&new_recipe)
-        .execute(conn)
-        .expect("Error saving new post");
-
-    return new_recipe;
+    return diesel::insert_into(recipe::table).values(&new_recipe).execute(conn);
 }
 
 pub fn read_recipe<'a>(conn: &diesel::pg::PgConnection, rid: String) -> QueryResult<Recipe> {
     return recipe::table.filter(recipe::id.eq(rid)).first(conn)
+}
+
+pub fn delete_recipe<'a>(conn: &diesel::pg::PgConnection, rid: String) -> QueryResult<usize> {
+    return diesel::delete(recipe::table.filter(recipe::id.eq(rid))).execute(conn)
 }
