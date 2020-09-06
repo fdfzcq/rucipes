@@ -1,6 +1,10 @@
 [*] initialize database
     [*] create recipe table
 [] crud recipe API
+    [*] POST create_recipe
+    [*] GET recipe/<id>
+    [] POST update_recipe/<id>
+    [] DELETE recipe/<id>
 [] makefile or similar
 [] deploy *
 ...

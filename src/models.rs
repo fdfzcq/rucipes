@@ -1,6 +1,7 @@
 use chrono::NaiveDateTime;
 use super::schema::recipe;
 use diesel::prelude::*;
+use serde::{Serialize, Deserialize};
 
 #[derive(Insertable)]
 #[table_name="recipe"]
@@ -10,7 +11,8 @@ pub struct NewRecipe<'a> {
     pub ingredients: &'a Vec<String>,
 }
 
-#[derive(Queryable)]
+#[derive(Queryable, Identifiable, Serialize, Deserialize)]
+#[table_name="recipe"]
 pub struct Recipe {
     pub id: String,
     pub recipe_name: String,
@@ -32,4 +34,8 @@ pub fn create_recipe<'a>(conn: &diesel::pg::PgConnection, id: &'a str, recipe_na
         .expect("Error saving new post");
 
     return new_recipe;
+}
+
+pub fn read_recipe<'a>(conn: &diesel::pg::PgConnection, rid: String) -> QueryResult<Recipe> {
+    return recipe::table.filter(recipe::id.eq(rid)).first(conn)
 }
