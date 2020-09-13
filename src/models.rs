@@ -3,7 +3,7 @@ use super::schema::recipe;
 use diesel::prelude::*;
 use serde::{Serialize, Deserialize};
 
-#[derive(Insertable)]
+#[derive(Insertable, AsChangeset)]
 #[table_name="recipe"]
 pub struct NewRecipe<'a> {
     pub id: &'a str,
@@ -24,11 +24,11 @@ pub struct Recipe {
 // db interface
 
 pub fn create_recipe<'a>(conn: &diesel::pg::PgConnection,
-                         id: &'a str,
+                         rid: &'a str,
                          recipe_name: &'a str,
                          ingredients: &'a Vec<String>) -> QueryResult<usize> {
     let new_recipe = NewRecipe {
-        id: id,
+        id: rid,
         recipe_name: recipe_name,
         ingredients: ingredients,
     };
@@ -37,9 +37,21 @@ pub fn create_recipe<'a>(conn: &diesel::pg::PgConnection,
 }
 
 pub fn read_recipe<'a>(conn: &diesel::pg::PgConnection, rid: String) -> QueryResult<Recipe> {
-    return recipe::table.filter(recipe::id.eq(rid)).first(conn)
+    return recipe::table.filter(recipe::id.eq(rid)).first(conn);
 }
 
 pub fn delete_recipe<'a>(conn: &diesel::pg::PgConnection, rid: String) -> QueryResult<usize> {
-    return diesel::delete(recipe::table.filter(recipe::id.eq(rid))).execute(conn)
+    return diesel::delete(recipe::table.filter(recipe::id.eq(rid))).execute(conn);
+}
+
+pub fn update_recipe<'a>(conn: &diesel::pg::PgConnection,
+                         rid: &'a str,
+                         rname: &'a str,
+                         ingrs: &'a Vec<String>) -> QueryResult<usize> {
+    let updated_recipe = NewRecipe {
+        id: rid,
+        recipe_name: rname,
+        ingredients: ingrs
+    };
+    return diesel::update(recipe::table).set(updated_recipe).execute(conn);
 }

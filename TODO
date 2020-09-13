@@ -3,8 +3,9 @@
 [] crud recipe API
     [*] POST create_recipe
     [*] GET recipe/<id>
-    [] DELETE recipe/<id>
-    [] POST update_recipe/<id>
+    [*] DELETE recipe/<id>
+    [*] POST update_recipe/<id>
+    [] validate request
 [] makefile or similar
 [] deploy *
 ...

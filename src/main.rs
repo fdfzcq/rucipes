@@ -73,6 +73,24 @@ fn delete_recipe(rid: Option<String>) -> JsonValue {
     }
 }
 
+#[post("/v1/recipe/<rid>", format = "json", data = "<recipe_body>")]
+fn update_recipe(recipe_body: Json<RecipeRequestBody>, rid: Option<String>) -> JsonValue {
+    let connection = database::init_db();
+    let rid_str = rid.unwrap();
+    let result = models::update_recipe(&connection,
+                                       &rid_str,
+                                       &recipe_body.recipe_name,
+                                       &recipe_body.ingredients);
+    match result {
+        Ok(_) =>
+            json!({"status": 200,
+                   "recipe_id": rid_str}),
+        Err(_) =>
+            // TODO: more granular errors
+            json!({"status": 400})
+        }
+}
+
 fn main() {
     // TODO: enrich database (separate process)
     // TODO: more endpoints
@@ -81,6 +99,7 @@ fn main() {
             ping,
             create_recipe,
             get_recipe,
-            delete_recipe
+            delete_recipe,
+            update_recipe
         ]).launch();
 }
