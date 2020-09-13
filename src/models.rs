@@ -55,3 +55,12 @@ pub fn update_recipe<'a>(conn: &diesel::pg::PgConnection,
     };
     return diesel::update(recipe::table).set(updated_recipe).execute(conn);
 }
+
+pub fn all_recipes<'a>(conn: &diesel::pg::PgConnection,
+                       page_size: i64,
+                       page: i64) -> QueryResult<Vec<Recipe>> {
+    return recipe::table.order(recipe::created_at)
+                        .offset(page - 1)
+                        .limit(page_size)
+                        .load::<Recipe>(conn);                     
+}

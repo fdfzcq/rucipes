@@ -19,6 +19,11 @@ mod database;
 pub mod schema;
 pub mod models;
 
+// const
+
+// TODO: change this magic number to something more reasonable
+const MAX_PAGE_SIZE: i64 = 500;
+
 // request bodies
 
 #[derive(Serialize, Deserialize)]
@@ -91,6 +96,16 @@ fn update_recipe(recipe_body: Json<RecipeRequestBody>, rid: Option<String>) -> J
         }
 }
 
+#[get("/v1/all_recipes?<page_size>&<page>")]
+fn all_recipes(page_size: Option<i64>, page: Option<i64>) -> JsonValue {
+    let connection = database::init_db();
+    let result = models::all_recipes(&connection, page_size.unwrap_or(MAX_PAGE_SIZE), page.unwrap_or(1));
+    match result {
+        Ok(recipes) => json!(recipes),
+        Err(_) => json!({"status": 400})
+    }
+}
+
 fn main() {
     // TODO: enrich database (separate process)
     // TODO: more endpoints
@@ -100,6 +115,7 @@ fn main() {
             create_recipe,
             get_recipe,
             delete_recipe,
-            update_recipe
+            update_recipe,
+            all_recipes
         ]).launch();
 }

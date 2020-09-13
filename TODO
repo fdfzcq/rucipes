@@ -5,7 +5,12 @@
     [*] GET recipe/<id>
     [*] DELETE recipe/<id>
     [*] POST update_recipe/<id>
+    [] GET all_recipes?pageSize=<page_size>&page=<page>
     [] validate request
+[] add recipe content
+[] UI
+[] add recipe tags
+    [] GET recipes?tag=<tag>
 [] makefile or similar
 [] deploy *
 ...
