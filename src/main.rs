@@ -17,7 +17,7 @@ use serde::{Serialize, Deserialize};
 mod database;
 
 pub mod schema;
-pub mod models;
+pub mod recipes;
 
 // const
 
@@ -44,7 +44,7 @@ fn create_recipe(recipe_body: Json<RecipeRequestBody>) -> JsonValue {
     let recipe_id = Uuid::new_v4().to_string();
     let connection = database::init_db();
     // TODO: verify input
-    let result = models::create_recipe(&connection,
+    let result = recipes::create_recipe(&connection,
                                        &recipe_id,
                                        &recipe_body.recipe_name,
                                        &recipe_body.ingredients);
@@ -61,7 +61,7 @@ fn create_recipe(recipe_body: Json<RecipeRequestBody>) -> JsonValue {
 #[get("/v1/recipe/<rid>")]
 fn get_recipe(rid: Option<String>) -> JsonValue {
     let connection = database::init_db();
-    let result = models::read_recipe(&connection, rid.unwrap());
+    let result = recipes::read_recipe(&connection, rid.unwrap());
     match result {
         Ok(recipe) => json!(recipe),
         Err(_) => json!({"status": 404})
@@ -71,7 +71,7 @@ fn get_recipe(rid: Option<String>) -> JsonValue {
 #[delete("/v1/recipe/<rid>")]
 fn delete_recipe(rid: Option<String>) -> JsonValue {
     let connection = database::init_db();
-    let result = models::delete_recipe(&connection, rid.unwrap());
+    let result = recipes::delete_recipe(&connection, rid.unwrap());
     match result {
         Ok(_) => json!({"status": 200}),
         Err(_) => json!({"status": 404})
@@ -82,7 +82,7 @@ fn delete_recipe(rid: Option<String>) -> JsonValue {
 fn update_recipe(recipe_body: Json<RecipeRequestBody>, rid: Option<String>) -> JsonValue {
     let connection = database::init_db();
     let rid_str = rid.unwrap();
-    let result = models::update_recipe(&connection,
+    let result = recipes::update_recipe(&connection,
                                        &rid_str,
                                        &recipe_body.recipe_name,
                                        &recipe_body.ingredients);
@@ -99,7 +99,7 @@ fn update_recipe(recipe_body: Json<RecipeRequestBody>, rid: Option<String>) -> J
 #[get("/v1/all_recipes?<page_size>&<page>")]
 fn all_recipes(page_size: Option<i64>, page: Option<i64>) -> JsonValue {
     let connection = database::init_db();
-    let result = models::all_recipes(&connection, page_size.unwrap_or(MAX_PAGE_SIZE), page.unwrap_or(1));
+    let result = recipes::all_recipes(&connection, page_size.unwrap_or(MAX_PAGE_SIZE), page.unwrap_or(1));
     match result {
         Ok(recipes) => json!(recipes),
         Err(_) => json!({"status": 400})
