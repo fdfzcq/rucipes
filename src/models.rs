@@ -15,10 +15,10 @@ pub struct NewRecipe<'a> {
 #[table_name="recipe"]
 pub struct Recipe {
     pub id: String,
-    pub recipe_name: String,
-    pub ingredients: Vec<String>,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
+    pub recipe_name: String,
+    pub ingredients: Vec<String>
 }
 
 // db interface

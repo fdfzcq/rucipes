@@ -5,9 +5,11 @@
     [*] GET recipe/<id>
     [*] DELETE recipe/<id>
     [*] POST update_recipe/<id>
-    [] GET all_recipes?pageSize=<page_size>&page=<page>
+    [*] GET all_recipes?pageSize=<page_size>&page=<page>
     [] validate request
 [] add recipe content
+    [] add recipe-ingredient table to store ingredient_name, recipe_id, unit - quantity
+    [] use ingredient_id in API instead of list of strs
 [] UI
 [] add recipe tags
     [] GET recipes?tag=<tag>
