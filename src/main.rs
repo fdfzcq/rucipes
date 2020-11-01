@@ -18,6 +18,7 @@ mod database;
 
 pub mod schema;
 pub mod recipes;
+pub mod ingredients;
 
 // const
 
@@ -27,9 +28,16 @@ const MAX_PAGE_SIZE: i64 = 500;
 // request bodies
 
 #[derive(Serialize, Deserialize)]
-struct RecipeRequestBody {
+pub struct RecipeRequestBody {
     recipe_name: String,
-    ingredients: Vec<String>
+    ingredients: Vec<IngredientRequestBody>
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct IngredientRequestBody {
+    ingredient_name: String,
+    unit: String,
+    quantity: i32
 }
 
 // endpoints

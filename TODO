@@ -7,12 +7,21 @@
     [*] POST update_recipe/<id>
     [*] GET all_recipes?pageSize=<page_size>&page=<page>
     [] validate request
-[] add recipe content
-    [] add recipe-ingredient table to store ingredient_name, recipe_id, unit - quantity
-    [] use ingredient_id in API instead of list of strs
+[*] add recipe content
+    [*] add recipe-ingredient table to store ingredient_name, recipe_id, unit - quantity
+[] steps
+    [] create steps table to store recipe_id, step_id, step_descriptions
+    [] create API calls for creating steps
+[] complete table setups
+    [] constraints
+    [] indexes
+[] make it possible to query ingredients
+    [] GET ingredient/<ingr>/recipe_ids
 [] UI
 [] add recipe tags
     [] GET recipes?tag=<tag>
 [] makefile or similar
-[] deploy *
+[] hygience
+[] tests
+[] deploy * maybe ?
 ...

@@ -26,14 +26,19 @@ pub struct Recipe {
 pub fn create_recipe<'a>(conn: &diesel::pg::PgConnection,
                          rid: &'a str,
                          recipe_name: &'a str,
-                         ingredients: &'a Vec<String>) -> QueryResult<usize> {
+                         ingrs: &'a Vec<super::IngredientRequestBody>) -> QueryResult<usize> {
     let new_recipe = NewRecipe {
         id: rid,
         recipe_name: recipe_name,
-        ingredients: ingredients,
+        ingredients: &(ingrs.into_iter().map(|i| i.ingredient_name.clone()).collect()),
     };
 
-    return diesel::insert_into(recipe::table).values(&new_recipe).execute(conn);
+    let ingredient_recipe_insertion_result = super::ingredients::insert_ingredients_recipe(conn, ingrs, rid);
+
+    match ingredient_recipe_insertion_result {
+        Ok(_) => return diesel::insert_into(recipe::table).values(&new_recipe).execute(conn),
+        Err(_) => return ingredient_recipe_insertion_result
+    }
 }
 
 pub fn read_recipe<'a>(conn: &diesel::pg::PgConnection, rid: String) -> QueryResult<Recipe> {
@@ -47,11 +52,11 @@ pub fn delete_recipe<'a>(conn: &diesel::pg::PgConnection, rid: String) -> QueryR
 pub fn update_recipe<'a>(conn: &diesel::pg::PgConnection,
                          rid: &'a str,
                          rname: &'a str,
-                         ingrs: &'a Vec<String>) -> QueryResult<usize> {
+                         ingrs: &'a Vec<super::IngredientRequestBody>) -> QueryResult<usize> {
     let updated_recipe = NewRecipe {
         id: rid,
         recipe_name: rname,
-        ingredients: ingrs
+        ingredients: &(ingrs.into_iter().map(|i| i.ingredient_name.clone()).collect()),
     };
     return diesel::update(recipe::table).set(updated_recipe).execute(conn);
 }
