@@ -19,6 +19,7 @@ mod database;
 pub mod schema;
 pub mod recipes;
 pub mod ingredients;
+pub mod steps;
 
 // const
 
@@ -38,6 +39,11 @@ pub struct IngredientRequestBody {
     ingredient_name: String,
     unit: String,
     quantity: i32
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct StepRequestBody {
+    content: String
 }
 
 // endpoints
@@ -104,6 +110,45 @@ fn update_recipe(recipe_body: Json<RecipeRequestBody>, rid: Option<String>) -> J
         }
 }
 
+#[post("/v1/recipe/<rid>/step/<step>", format = "json", data = "<step_body>")]
+fn create_update_step(step_body: Json<StepRequestBody>, rid: Option<String>, step: Option<i32>) -> JsonValue {
+    let connection = database::init_db();
+    let rid_str = rid.unwrap();
+    let step_number = step.unwrap();
+    let result = steps::add_recipe_step(&connection,
+                                        &step_number,
+                                        &step_body.content,
+                                        &rid_str);
+    match result {
+        Ok(_) =>
+            json!({"status": 201,
+                   "recipe_id": rid_str}),
+        Err(_) =>
+            // TODO: more granular errors
+            json!({"status": 400})
+        }
+}
+
+#[get("/v1/recipe/<rid>/step/<step>")]
+fn get_recipe_step(rid: Option<String>, step: Option<i32>) -> JsonValue {
+    let connection = database::init_db();
+    let result = steps::read_step(&connection, rid.unwrap(), step.unwrap());
+    match result {
+        Ok(step) => json!(step),
+        Err(_) => json!({"status": 404})
+    }
+}
+
+#[delete("/v1/recipe/<rid>/step/<step>")]
+fn delete_recipe_step(rid: Option<String>, step: Option<i32>) -> JsonValue {
+    let connection = database::init_db();
+    let result = steps::delete_step(&connection, rid.unwrap(), step.unwrap());
+    match result {
+        Ok(_) => json!({"status": 200}),
+        Err(_) => json!({"status": 404})
+    }
+}
+
 #[get("/v1/all_recipes?<page_size>&<page>")]
 fn all_recipes(page_size: Option<i64>, page: Option<i64>) -> JsonValue {
     let connection = database::init_db();
@@ -124,6 +169,9 @@ fn main() {
             get_recipe,
             delete_recipe,
             update_recipe,
+            create_update_step,
+            get_recipe_step,
+            delete_recipe_step,
             all_recipes
         ]).launch();
 }

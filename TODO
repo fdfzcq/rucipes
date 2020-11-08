@@ -10,11 +10,13 @@
 [*] add recipe content
     [*] add recipe-ingredient table to store ingredient_name, recipe_id, unit - quantity
 [] steps
-    [] create steps table to store recipe_id, step_id, step_descriptions
-    [] create API calls for creating steps
+    [*] create steps table to store recipe_id, step_id, step_descriptions/content
+    [*] create crud API calls for steps
 [] complete table setups
+    [] timestamp triggers for all tables
     [] constraints
     [] indexes
+    [] idempotency
 [] make it possible to query ingredients
     [] GET ingredient/<ingr>/recipe_ids
 [] UI

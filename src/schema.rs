@@ -19,7 +19,18 @@ table! {
     }
 }
 
+table! {
+    recipe_step (recipe_id, step_no) {
+        recipe_id -> Text,
+        step_no -> Int4,
+        content -> Nullable<Text>,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
     ingredient_recipe,
     recipe,
+    recipe_step,
 );

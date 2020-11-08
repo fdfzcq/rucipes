@@ -42,11 +42,11 @@ pub fn create_recipe<'a>(conn: &diesel::pg::PgConnection,
 }
 
 pub fn read_recipe<'a>(conn: &diesel::pg::PgConnection, rid: String) -> QueryResult<Recipe> {
-    return recipe::table.filter(recipe::id.eq(rid)).first(conn);
+    return recipe::table.find(rid).first(conn);
 }
 
 pub fn delete_recipe<'a>(conn: &diesel::pg::PgConnection, rid: String) -> QueryResult<usize> {
-    return diesel::delete(recipe::table.filter(recipe::id.eq(rid))).execute(conn);
+    return diesel::delete(recipe::table.find(rid)).execute(conn);
 }
 
 pub fn update_recipe<'a>(conn: &diesel::pg::PgConnection,
@@ -58,7 +58,13 @@ pub fn update_recipe<'a>(conn: &diesel::pg::PgConnection,
         recipe_name: rname,
         ingredients: &(ingrs.into_iter().map(|i| i.ingredient_name.clone()).collect()),
     };
-    return diesel::update(recipe::table).set(updated_recipe).execute(conn);
+    
+    let ingredient_recipe_insertion_result = super::ingredients::insert_ingredients_recipe(conn, ingrs, rid);
+
+    match ingredient_recipe_insertion_result {
+        Ok(_) => return diesel::update(recipe::table).set(updated_recipe).execute(conn),
+        Err(_) => return ingredient_recipe_insertion_result
+    }
 }
 
 pub fn all_recipes<'a>(conn: &diesel::pg::PgConnection,
