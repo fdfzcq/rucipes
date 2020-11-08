@@ -31,7 +31,8 @@ const MAX_PAGE_SIZE: i64 = 500;
 #[derive(Serialize, Deserialize)]
 pub struct RecipeRequestBody {
     recipe_name: String,
-    ingredients: Vec<IngredientRequestBody>
+    ingredients: Vec<IngredientRequestBody>,
+    number_of_steps: i32
 }
 
 #[derive(Serialize, Deserialize)]
@@ -61,7 +62,8 @@ fn create_recipe(recipe_body: Json<RecipeRequestBody>) -> JsonValue {
     let result = recipes::create_recipe(&connection,
                                        &recipe_id,
                                        &recipe_body.recipe_name,
-                                       &recipe_body.ingredients);
+                                       &recipe_body.ingredients,
+                                       &recipe_body.number_of_steps);
     match result {
         Ok(_) =>
             json!({"status": 201,
@@ -99,7 +101,8 @@ fn update_recipe(recipe_body: Json<RecipeRequestBody>, rid: Option<String>) -> J
     let result = recipes::update_recipe(&connection,
                                        &rid_str,
                                        &recipe_body.recipe_name,
-                                       &recipe_body.ingredients);
+                                       &recipe_body.ingredients,
+                                       &recipe_body.number_of_steps);
     match result {
         Ok(_) =>
             json!({"status": 200,

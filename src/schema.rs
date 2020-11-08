@@ -16,6 +16,7 @@ table! {
         updated_at -> Timestamp,
         recipe_name -> Text,
         ingredients -> Array<Text>,
+        number_of_steps -> Nullable<Int4>,
     }
 }
 

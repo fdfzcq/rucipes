@@ -9,6 +9,7 @@ pub struct NewRecipe<'a> {
     pub id: &'a str,
     pub recipe_name: &'a str,
     pub ingredients: &'a Vec<String>,
+    pub number_of_steps: &'a i32
 }
 
 #[derive(Queryable, Identifiable, Serialize, Deserialize)]
@@ -18,7 +19,8 @@ pub struct Recipe {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
     pub recipe_name: String,
-    pub ingredients: Vec<String>
+    pub ingredients: Vec<String>,
+    pub number_of_steps: Option<i32>
 }
 
 // db interface
@@ -26,11 +28,13 @@ pub struct Recipe {
 pub fn create_recipe<'a>(conn: &diesel::pg::PgConnection,
                          rid: &'a str,
                          recipe_name: &'a str,
-                         ingrs: &'a Vec<super::IngredientRequestBody>) -> QueryResult<usize> {
+                         ingrs: &'a Vec<super::IngredientRequestBody>,
+                         no_of_steps: &'a i32) -> QueryResult<usize> {
     let new_recipe = NewRecipe {
         id: rid,
         recipe_name: recipe_name,
         ingredients: &(ingrs.into_iter().map(|i| i.ingredient_name.clone()).collect()),
+        number_of_steps: no_of_steps
     };
 
     let ingredient_recipe_insertion_result = super::ingredients::insert_ingredients_recipe(conn, ingrs, rid);
@@ -52,11 +56,13 @@ pub fn delete_recipe<'a>(conn: &diesel::pg::PgConnection, rid: String) -> QueryR
 pub fn update_recipe<'a>(conn: &diesel::pg::PgConnection,
                          rid: &'a str,
                          rname: &'a str,
-                         ingrs: &'a Vec<super::IngredientRequestBody>) -> QueryResult<usize> {
+                         ingrs: &'a Vec<super::IngredientRequestBody>,
+                         no_of_steps: &'a i32) -> QueryResult<usize> {
     let updated_recipe = NewRecipe {
         id: rid,
         recipe_name: rname,
         ingredients: &(ingrs.into_iter().map(|i| i.ingredient_name.clone()).collect()),
+        number_of_steps: no_of_steps
     };
     
     let ingredient_recipe_insertion_result = super::ingredients::insert_ingredients_recipe(conn, ingrs, rid);

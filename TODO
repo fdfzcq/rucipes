@@ -9,9 +9,12 @@
     [] validate request
 [*] add recipe content
     [*] add recipe-ingredient table to store ingredient_name, recipe_id, unit - quantity
-[] steps
+[*] steps
     [*] create steps table to store recipe_id, step_id, step_descriptions/content
     [*] create crud API calls for steps
+    [*] add number_of_steps field ot recipe struct and table
+[] images
+    [] create image table to store recipe_id, image 
 [] complete table setups
     [] timestamp triggers for all tables
     [] constraints
