@@ -1,0 +1,2 @@
+ALTER TABLE ingredient_recipe DROP CONSTRAINT IF EXISTS recipe_table_to_ingredient_recipe_table;
+ALTER TABLE recipe_step DROP CONSTRAINT IF EXISTS recipe_table_to_recipe_step_table;
