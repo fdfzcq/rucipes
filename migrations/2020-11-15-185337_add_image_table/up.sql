@@ -1,7 +1,7 @@
 CREATE TABLE recipe_image (recipe_id text PRIMARY KEY,
                            created_at TIMESTAMP NOT NULL DEFAULT NOW(),
                            updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-                           recipe_image bytea NOT NULL,
+                           image_byte bytea NOT NULL,
                            CONSTRAINT recipe_id_constraint
                                 FOREIGN KEY(recipe_id)
                                     REFERENCES recipe(id));

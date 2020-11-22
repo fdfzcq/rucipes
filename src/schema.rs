@@ -25,7 +25,7 @@ table! {
         recipe_id -> Text,
         created_at -> Timestamp,
         updated_at -> Timestamp,
-        recipe_image -> Bytea,
+        image_byte -> Bytea,
     }
 }
 

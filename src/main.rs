@@ -20,6 +20,7 @@ pub mod schema;
 pub mod recipes;
 pub mod ingredients;
 pub mod steps;
+pub mod images;
 
 // const
 
@@ -45,6 +46,11 @@ pub struct IngredientRequestBody {
 #[derive(Serialize, Deserialize)]
 pub struct StepRequestBody {
     content: String
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ImageRequestBody {
+    image: Vec<u8>
 }
 
 // endpoints
@@ -114,7 +120,7 @@ fn update_recipe(recipe_body: Json<RecipeRequestBody>, rid: Option<String>) -> J
 }
 
 #[post("/v1/recipe/<rid>/step/<step>", format = "json", data = "<step_body>")]
-fn create_update_step(step_body: Json<StepRequestBody>, rid: Option<String>, step: Option<i32>) -> JsonValue {
+fn create_update_recipe_step(step_body: Json<StepRequestBody>, rid: Option<String>, step: Option<i32>) -> JsonValue {
     let connection = database::init_db();
     let rid_str = rid.unwrap();
     let step_number = step.unwrap();
@@ -162,19 +168,48 @@ fn all_recipes(page_size: Option<i64>, page: Option<i64>) -> JsonValue {
     }
 }
 
+#[post("/v1/recipe/<rid>/image", format = "json", data = "<image_body>")]
+fn create_recipe_image(image_body: Json<ImageRequestBody>, rid: Option<String>) -> JsonValue {
+    let connection = database::init_db();
+    let rid_str = rid.unwrap();
+    let result = images::add_recipe_image(&connection,
+                                          &image_body.image,
+                                          &rid_str);
+    match result {
+        Ok(_) =>
+            json!({"status": 201,
+                   "recipe_id": rid_str}),
+        Err(_) =>
+            // TODO: more granular errors
+            json!({"status": 400})
+        }
+}
+
+#[delete("/v1/recipe/<rid>/image")]
+fn delete_recipe_image(rid: Option<String>) -> JsonValue {
+    let connection = database::init_db();
+    let result = images::delete_image(&connection, rid.unwrap());
+    match result {
+        Ok(_) => json!({"status": 200}),
+        Err(_) => json!({"status": 404})
+    }
+}
+
 fn main() {
     // TODO: enrich database (separate process)
     // TODO: more endpoints
     rocket::ignite().mount("/",
         routes![
-            ping,
+            all_recipes,
             create_recipe,
-            get_recipe,
+            create_recipe_image,
+            create_update_recipe_step,
             delete_recipe,
-            update_recipe,
-            create_update_step,
-            get_recipe_step,
+            delete_recipe_image,
             delete_recipe_step,
-            all_recipes
+            get_recipe,
+            get_recipe_step,
+            ping,
+            update_recipe
         ]).launch();
 }
